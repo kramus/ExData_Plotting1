@@ -1,3 +1,14 @@
+##Loading packages
+if(!require(lubridate)){
+        install.packages("lubridate")
+}
+require(lubridate)
+
+if(!require(data.table)){
+        install.packages("data.table")
+}
+require(data.table)
+
 ##Getting Data
 if(!file.exists(".\\data")) {dir.create(".\\data")}
 fileurl <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
@@ -17,19 +28,11 @@ skip <- as.numeric((end_date - begin_date)*60*24 + 1)
 #amount of mins in a day
 rows <- 2*60*24
 #Read file including skip and nrows arguments
-df <- fread("household_power_consumption.txt", sep = ";", na.strings = "?", 
+df <- fread(file, sep = ";", na.strings = "?", 
             skip = skip, nrows = rows, col.names = colnames)
 
 
-
 #Creating date_time variable
-#Load package
-if(!require(lubridate)){
-        install.packages("lubridate")
-}
-require(lubridate)
-
-#Create variable
 df$date_time <- dmy_hms(paste(df$Date, df$Time))
 
 
@@ -41,9 +44,9 @@ with(df, plot(date_time, Sub_metering_1, type = "n",
 with(df, points(date_time, Sub_metering_1, type = "l"))
 with(df, points(date_time, Sub_metering_2,  type = "l", col = "red"))
 with(df, points(date_time, Sub_metering_3,  type = "l", col = "blue"))
-legend("topright", col = c("black","red","blue"), lwd = 1, cex = 0.8,
+legend("topright", col = c("black","red","blue"), lwd = 1, cex = 0.7,
        legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"))
-dev.copy(png, file = "plot3.png")
+dev.copy(png, file = "plot3.png", width = 480, height = 480)
 dev.off()
 
 
